@@ -31,17 +31,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Пробуем разные имена поля файла
 	var fileContent []byte
 	var filename string
 
-	// Сначала пробуем стандартное имя
 	if file, header, err := r.FormFile("file"); err == nil {
 		fileContent, _ = io.ReadAll(file)
 		filename = header.Filename
 		file.Close()
 	} else if file, header, err := r.FormFile("myFile"); err == nil {
-		// Пробуем альтернативное имя из HTML формы
+
 		fileContent, _ = io.ReadAll(file)
 		filename = header.Filename
 		file.Close()
@@ -77,16 +75,13 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	resultFile.WriteString(convertedString)
 
-	// Критически важная часть для теста:
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 
-	// Тест проверяет, что в ответе есть исходный текст
 	fmt.Fprintf(w, "Файл успешно обработан!\n\n")
 	fmt.Fprintf(w, "Исходный файл: %s\n", filename)
 
-	// Убедитесь, что исходный текст выводится БЕЗ лишних форматирований
-	fmt.Fprintf(w, "Исходный текст: %s\n", content) // ← ТЕСТ ИЩЕТ ЭТО
+	fmt.Fprintf(w, "Исходный текст: %s\n", content)
 
 	fmt.Fprintf(w, "Результат сохранен в: %s\n\n", resultPath)
 	fmt.Fprintf(w, "Конвертированное содержимое:\n%s", convertedString)
